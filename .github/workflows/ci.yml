@@ -23,9 +23,11 @@ jobs:
 
       - name: Run tests
         id: test_step
+        continue-on-error: true
         run: |
           export PYTHONPATH=$(pwd)
           pytest --maxfail=1 --disable-warnings | tee test_output.txt
+          exit ${PIPESTATUS[0]}
 
       - name: Run AI Analysis if tests fail
         if: steps.test_step.outcome == 'failure'
