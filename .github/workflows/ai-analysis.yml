@@ -1,0 +1,36 @@
+name: AI Failure Analysis
+
+on:
+  workflow_run:
+    workflows: ["Basic CI"]
+    types:
+      - completed
+
+jobs:
+  analyze:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install OpenAI SDK
+        run: pip install openai
+
+      - name: Download Logs
+        run: |
+          echo "Fetching logs..."
+          gh run download ${{ github.event.workflow_run.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run AI Analysis
+        run: python ai_agent.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
