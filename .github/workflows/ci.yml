@@ -21,5 +21,6 @@ jobs:
 
       - name: Run tests
         run: |
+          set -e
           export PYTHONPATH=$(pwd)
-          pytest --disable-warnings | tee test_output.txt
+          pytest --maxfail=1 --disable-warnings | tee test_output.txt
