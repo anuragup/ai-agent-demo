@@ -26,7 +26,6 @@ jobs:
         run: |
           export PYTHONPATH=$(pwd)
           pytest --maxfail=1 --disable-warnings | tee test_output.txt
-        continue-on-error: true
 
       - name: Run AI Analysis if tests fail
         if: steps.test_step.outcome == 'failure'
